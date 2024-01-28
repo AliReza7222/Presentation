@@ -20,7 +20,11 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # allauth
     path('accounts/', include('allauth.urls')),
+    # simple jwt token
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # app path
+    path("api/v1/slides/", include("Slide.api.v1.urls")),
 ]
