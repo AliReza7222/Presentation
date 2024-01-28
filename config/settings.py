@@ -33,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 AUTH_USER_MODEL = 'accounts.User'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", False)
+DEBUG = env.bool("DEBUG", False)
 
 ALLOWED_HOSTS = []
 
@@ -56,7 +56,7 @@ LOCAL_APPS = [
 ]
 
 PARTY_APPS = [
-    'restframework',
+    'rest_framework',
     "rest_framework_simplejwt",
     'allauth',
     'allauth.account',
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -97,6 +98,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# AUTHENTICATION
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
