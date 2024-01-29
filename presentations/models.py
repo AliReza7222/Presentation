@@ -12,17 +12,18 @@ class Tag(models.Model):
 
 
 class Presentation(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     background = models.ImageField(upload_to='images/')
     is_published = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
-    tag = models.ManyToManyField(Tag)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    tag = models.ManyToManyField(Tag, blank=True)
 
     def delete(self, using=None, keep_parents=False):
         self.background.storage.delete(str(self.background.name))
+        return super(Presentation, self).delete(*args, **kwargs)
 
     def __str__(self):
         format_datetime = self.created_at.strftime('%Y-%m-%d %H:%M:%S')

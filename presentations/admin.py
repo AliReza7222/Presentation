@@ -1,3 +1,6 @@
 from django.contrib import admin
+from presentations.models import Presentation, Tag
 
-# Register your models here.
+
+admin.site.register(Presentation)
+admin.site.register(Tag)
