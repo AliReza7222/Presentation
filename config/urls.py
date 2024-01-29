@@ -27,4 +27,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # app path
     path("api/v1/slides/", include("Slide.api.v1.urls")),
+    path("api/v1/users/", include("accounts.api.v1.urls")),
 ]
