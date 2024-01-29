@@ -27,5 +27,5 @@ urlpatterns = [
     # app path
     path("api/v1/users/", include("accounts.api.v1.urls")),
     path("api/v1/presentation/", include("presentations.api.v1.urls")),
-    path("api/v1/slides/", include("Slide.api.v1.urls")),
+    path("api/v1/slide/", include("Slide.api.v1.urls")),
 ]
