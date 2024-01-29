@@ -9,4 +9,4 @@ class Slide(models.Model):
     content = models.TextField()
     presentation_id = models.ForeignKey(Presentation, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
