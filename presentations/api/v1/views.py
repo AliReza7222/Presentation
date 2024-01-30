@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from presentations.api.v1.serializers import *
@@ -73,3 +73,23 @@ class UpdateTagView(UpdateAPIView):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
+
+class DeletePresentationView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Presentation.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(data={'message': 'The presentation was successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
+
+
+class DeleteTagView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Tag.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(data={'message': 'The tag was successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
