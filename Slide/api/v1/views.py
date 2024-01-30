@@ -1,5 +1,6 @@
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from Slide.api.v1.serializers import SlideSerializer
@@ -29,3 +30,13 @@ class UpdateSlideView(UpdateAPIView):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
+
+class DeleteSlideView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Slide.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(data={'message': 'The slide was successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
