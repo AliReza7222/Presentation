@@ -1,38 +1,39 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from presentations.api.v1.serializers import *
+from presentations.serializers import *
 from presentations.models import Presentation, Tag
+from utils.tag_create import CreateObjectTag
 
 
 class CreatePresentationView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PresentationSerializer
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
         data['user'] = request.user.id
         serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
+        tag_names = data.pop('tags', [])
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+        if tag_names:
+            tags = CreateObjectTag.create_list_obj_tags(tag_names=tag_names)
+            data.setlist('tags', tags)
+
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
-class CreateTagView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = TagSerializer
-
-    def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data['user'] = request.user.id
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            CreateObjectTag.add_tags_valid_data(serializer, tags),
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 
 class UpdatePresentationView(UpdateAPIView):
@@ -43,32 +44,9 @@ class UpdatePresentationView(UpdateAPIView):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
-
-
-class UpdateTagView(UpdateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = TagSerializer
-    queryset = Tag.objects.all()
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
 
@@ -81,13 +59,3 @@ class DeletePresentationView(DestroyAPIView):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(data={'message': 'The presentation was successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
-
-
-class DeleteTagView(DestroyAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = Tag.objects.all()
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(data={'message': 'The tag was successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
