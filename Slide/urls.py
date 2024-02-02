@@ -1,6 +1,6 @@
 from django.urls import path
 
-from Slide.api.v1.views import *
+from Slide.views import *
 
 
 app_name = "Slide"

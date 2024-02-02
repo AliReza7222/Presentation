@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from Slide.api.v1.serializers import SlideSerializer
+from Slide.serializers import SlideSerializer
 from Slide.models import Slide
 
 
