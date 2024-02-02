@@ -18,14 +18,13 @@ class CreatePresentationView(CreateAPIView):
         data = request.data.copy()
         data['user'] = request.user.id
         serializer = self.get_serializer(data=data)
-        tag_names = data.pop('tags', [])
+        tags = data.pop('tags', [])
 
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-        if tag_names:
-            tags = CreateObjectTag.create_list_obj_tags(tag_names=tag_names)
-            data.setlist('tags', tags)
+        if tags:
+            data.setlist('tags', CreateObjectTag.create_list_obj_tags(tag_names=tags))
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
