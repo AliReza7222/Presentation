@@ -1,6 +1,6 @@
 from django.urls import path
 
-from accounts.api.v1.views import *
+from accounts.views import *
 
 
 app_name = 'accounts'

@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.api.v1.serializers import *
+from accounts.serializers import *
 from accounts.models import Profile
 
 
