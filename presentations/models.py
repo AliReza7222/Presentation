@@ -13,6 +13,7 @@ class Tag(models.Model):
 
 class Presentation(models.Model):
     title = models.CharField(max_length=100, unique=True)
+    slug = models.CharField(max_length=100)
     description = models.TextField()
     background = models.ImageField(upload_to='images/presentation/')
     is_published = models.BooleanField()
