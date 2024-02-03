@@ -7,7 +7,7 @@ from utils.data_digikala import DigiKalaData
 
 
 class GetChaptersView(GenericAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, **kwargs):
         object_digikala_data = DigiKalaData()
@@ -17,7 +17,7 @@ class GetChaptersView(GenericAPIView):
 
 
 class GetSectionView(GenericAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, **kwargs):
         object_digikala_data = DigiKalaData()
