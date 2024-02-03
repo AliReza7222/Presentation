@@ -8,19 +8,16 @@ class DigiKalaData:
     def get_data(self, url):
         try:
             response = requests.get(url)
-
             return response.json()
 
-        except HTTPError:
-            return f'Http error : {response.reason}'
-
-    def get_specifications_data(self):
-        specifications_data = self.get_data(self.url_chapters)
-        del specifications_data['results']
-        return specifications_data
+        except Exception as error:
+            if isinstance(error, HTTPError):
+                return {'detail': error.response.reason}
+            else:
+                return {'detail': 'error request .'}
 
     def get_chapters(self):
-        chapters = {
-            'chapters': self.get_data(self.url_chapters).get('results')
-        }
-        return chapters
+        response = self.get_data(self.url_chapters)
+        if response.get('results'):
+            response = {'chapters': response.get('results')}
+        return response
