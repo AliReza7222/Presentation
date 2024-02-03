@@ -52,7 +52,8 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
     'presentations.apps.PresentationsConfig',
-    'Slide.apps.SlideConfig'
+    'Slide.apps.SlideConfig',
+    'digikala.apps.DigikalaConfig'
 ]
 
 PARTY_APPS = [

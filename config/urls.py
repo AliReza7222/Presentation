@@ -28,4 +28,5 @@ urlpatterns = [
     path("api/v1/users/", include("accounts.urls")),
     path("api/v1/presentation/", include("presentations.urls")),
     path("api/v1/slide/", include("Slide.urls")),
+    path('api/v1/digikala/', include('digikala.urls'))
 ]
