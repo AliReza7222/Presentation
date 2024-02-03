@@ -18,6 +18,7 @@ class Presentation(models.Model):
     background = models.ImageField(upload_to='images/presentation/')
     is_published = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    full_name_presenter = models.CharField(max_length=150, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     tags = models.ManyToManyField(Tag, related_name='tags', blank=True)
