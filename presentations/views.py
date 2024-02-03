@@ -10,7 +10,7 @@ from utils.tag_create import CreateObjectTag
 
 
 class CreatePresentationView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
 
     @transaction.atomic
@@ -36,7 +36,7 @@ class CreatePresentationView(CreateAPIView):
 
 
 class UpdatePresentationView(UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
     queryset = Presentation.objects.all()
 
@@ -51,7 +51,7 @@ class UpdatePresentationView(UpdateAPIView):
 
 
 class DeletePresentationView(DestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     queryset = Presentation.objects.all()
 
     def destroy(self, request, *args, **kwargs):

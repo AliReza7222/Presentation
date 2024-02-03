@@ -13,7 +13,7 @@ class CreateSlideView(CreateAPIView):
 
 
 class UpdateSlideView(UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     serializer_class = SlideSerializer
     queryset = Slide.objects.all()
 
@@ -30,7 +30,7 @@ class UpdateSlideView(UpdateAPIView):
 
 
 class DeleteSlideView(DestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     queryset = Slide.objects.all()
 
     def destroy(self, request, *args, **kwargs):
