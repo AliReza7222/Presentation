@@ -21,7 +21,7 @@ class Presentation(models.Model):
     full_name_presenter = models.CharField(max_length=150, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
-    tags = models.ManyToManyField(Tag, related_name='tags', blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
         self.background.storage.delete(str(self.background.name))

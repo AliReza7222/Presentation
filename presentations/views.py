@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from presentations.serializers import *
 from presentations.models import Presentation, Tag
-from utils.tag_create import CreateObjectTag
+from utils.tags import TagObject
 
 
 class CreatePresentationView(CreateAPIView):
@@ -17,19 +17,21 @@ class CreatePresentationView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
         data['user'] = request.user.id
-        serializer = self.get_serializer(data=data)
+
         tags = data.pop('tags', [])
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-
         if tags:
-            data.setlist('tags', CreateObjectTag.create_list_obj_tags(tag_names=tags))
+            data.setlist('tags', TagObject.create_list_obj_tags(tag_names=tags))
+
+        serializer = self.get_serializer(data=data)
+        if not serializer.is_valid():
+            transaction.set_rollback(True)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        print(data)
         return Response(
-            CreateObjectTag.add_tags_valid_data(serializer, tags),
+            TagObject.add_tags_valid_data(serializer, tags),
             status=status.HTTP_201_CREATED,
             headers=headers
         )
@@ -56,5 +58,11 @@ class DeletePresentationView(DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+        tag_object = TagObject()
+        list_tags_id = list(instance.tags.values_list('id', flat=True))
+        tag_object.delete_unique_tag(list_tags_id)
         self.perform_destroy(instance)
-        return Response(data={'message': 'The presentation was successfully deleted'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            data={'message': 'The presentation was successfully deleted'},
+            status=status.HTTP_204_NO_CONTENT
+        )
