@@ -64,7 +64,12 @@ class ProfileSrializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'updated_at'
+        ]
 
 
 class SignInSerializer(serializers.Serializer):
