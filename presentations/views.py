@@ -36,7 +36,7 @@ class CreatePresentationView(CreateAPIView):
             headers=headers
         )
 
-
+# have a problem remember fix !
 class UpdatePresentationView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
