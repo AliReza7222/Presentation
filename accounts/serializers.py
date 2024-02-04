@@ -1,4 +1,4 @@
-import uuid
+import uuid, re
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import serializers
@@ -26,15 +26,31 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'id': {'read_only': True},
             'created_at': {'read_only': True},
-            'activation_code': {'read_only': True},
             'password': {'write_only': True},
         }
+
+    def validate_username(self, username):
+        if len(username) <= 6 or len(username) >= 21:
+            raise serializers.ValidationError("The number of characters in the username must be greater than 7 and less than 20 characters !")
+        elif not re.match('^[a-zA-Z].+$', username):
+            raise serializers.ValidationError("The username start with words !")
+        return username
+
+    def validate_password(self, password):
+        if len(password) <= 6:
+            raise serializers.ValidationError('The minimum number of password characters must be greater than 7 !')
+        return password
+
+    def validate_activation_code(self, activation_code):
+        if not len(activation_code) == 16:
+            raise serializers.ValidationError('Invalid activation code !')
+        return activation_code
 
     def validate(self, data):
         password, confirm_password = data["password"], data["confirm_password"]
         if password != confirm_password:
             raise serializers.ValidationError(
-                {"password": "Passwords do not match."}
+                {"password": "password do not match with confirm password !"}
             )
         return data
 
