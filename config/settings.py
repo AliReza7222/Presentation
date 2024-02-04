@@ -111,6 +111,10 @@ AUTHENTICATION_BACKENDS = [
 DATABASES = {'default': env.db('DATABASE_URL')}
 DATABASES['default']['ATOMIC_REQUEST'] = True
 
+# Email Config
+
+EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
