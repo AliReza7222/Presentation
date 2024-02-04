@@ -6,7 +6,6 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     activation_code = models.CharField(max_length=16)
