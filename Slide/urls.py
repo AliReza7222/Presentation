@@ -1,10 +1,14 @@
+from django.conf import settings
 from django.urls import include, path
 from rest_framework import routers
 
 from Slide.views import SlideViewSet
 
 
-router = routers.DefaultRouter()
+if settings.DEBUG:
+    router = routers.DefaultRouter()
+else :
+    router = routers.SimpleRouter()
 router.register(r'', SlideViewSet, basename='slide_viewset')
 
 app_name = "Slide"
