@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
