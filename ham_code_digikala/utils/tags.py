@@ -1,4 +1,4 @@
-from presentations.models import Tag
+from ham_code_digikala.presentations.models import Tag
 
 
 class TagObject:

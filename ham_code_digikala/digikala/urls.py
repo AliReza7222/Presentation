@@ -1,6 +1,6 @@
 from django.urls import path
 
-from digikala.views import *
+from .views import *
 
 app_name = 'digikala'
 

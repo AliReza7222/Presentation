@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SlideConfig(AppConfig):
+class PresentationsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Slide'
+    name = 'ham_code_digikala.presentations'

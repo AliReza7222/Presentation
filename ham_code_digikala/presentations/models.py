@@ -1,7 +1,7 @@
 from django.db import models
 
 
-from accounts.models import User
+from ham_code_digikala.accounts.models import User
 
 
 class Tag(models.Model):

@@ -4,8 +4,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.permissions import IsAuthenticated
 
-from Slide.serializers import SlideSerializer
-from Slide.models import Slide
+from .serializers import SlideSerializer
+from .models import Slide
 
 
 class SlideViewSet(

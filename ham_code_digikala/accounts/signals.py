@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from accounts.models import Profile
+from .models import Profile
 
 User = get_user_model()
 

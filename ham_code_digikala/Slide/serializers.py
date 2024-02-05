@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from Slide.models import Slide
+from .models import Slide
 
 
 class SlideSerializer(serializers.ModelSerializer):

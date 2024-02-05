@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'accounts'
+    name = 'ham_code_digikala.accounts'
 
     def ready(self):
-        import accounts.signals
+        import ham_code_digikala.accounts.signals

@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from presentations.serializers import *
-from presentations.models import Presentation, Tag
-from utils.tags import TagObject
+from .serializers import *
+from .models import Presentation, Tag
+from ham_code_digikala.utils.tags import TagObject
 
 
 class CreatePresentationView(CreateAPIView):
@@ -29,7 +29,6 @@ class CreatePresentationView(CreateAPIView):
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        print(data)
         return Response(
             TagObject.add_tags_valid_data(serializer, tags),
             status=status.HTTP_201_CREATED,

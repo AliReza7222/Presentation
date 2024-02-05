@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accounts.models import Profile
+from .models import Profile
 
 User = get_user_model()
 

@@ -1,6 +1,6 @@
 from django.db import models
 
-from presentations.models import Presentation
+from ham_code_digikala.presentations.models import Presentation
 
 
 class Slide(models.Model):

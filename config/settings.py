@@ -17,6 +17,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ham_code_digikala
+APP_DIR = BASE_DIR / "ham_code_digikala"
+
 env = environ.Env()
 READ_DOT_ENV_FILE = env.bool("DJANGO_DOT_ENV_FILE", default=False)
 
@@ -50,13 +53,13 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'accounts.apps.AccountsConfig',
-    'presentations.apps.PresentationsConfig',
-    'Slide.apps.SlideConfig',
-    'digikala.apps.DigikalaConfig'
+    'ham_code_digikala.accounts.apps.AccountsConfig',
+    'ham_code_digikala.presentations.apps.PresentationsConfig',
+    'ham_code_digikala.Slide.apps.SlideConfig',
+    'ham_code_digikala.digikala.apps.DigikalaConfig'
 ]
 
-PARTY_APPS = [
+THIRD_PARTY_APPS = [
     'rest_framework',
     "rest_framework_simplejwt",
     'allauth',
@@ -65,7 +68,7 @@ PARTY_APPS = [
     "corsheaders"
 ]
 
-INSTALLED_APPS = DJANGO_APPS + PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
