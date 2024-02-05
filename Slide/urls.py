@@ -1,11 +1,11 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
 
-from Slide.views import *
+from Slide.views import SlideViewSet
 
+
+router = routers.DefaultRouter()
+router.register(r'', SlideViewSet, basename='slide_viewset')
 
 app_name = "Slide"
-urlpatterns = [
-    path("create/", CreateSlideView.as_view(), name="create_slide"),
-    path("update/<int:pk>/", UpdateSlideView.as_view(), name='update_slide'),
-    path("delete/<int:pk>/", DeleteSlideView.as_view(), name='delete_slide')
-]
+urlpatterns = router.urls
