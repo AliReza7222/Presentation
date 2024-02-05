@@ -9,8 +9,8 @@ from Slide.models import Slide
 
 
 class SlideViewSet(
-    GenericViewSet, CreateModelMixin, UpdateModelMixin, DestroyModelMixin):
-    
+    DestroyModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+
     permissions_classes = (IsAuthenticated, )
     serializer_class = SlideSerializer
     queryset = Slide.objects.all()
