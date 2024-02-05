@@ -1,4 +1,6 @@
+from tabnanny import verbose
 import uuid
+from django.core.validators import EmailValidator
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import serializers
@@ -76,4 +78,46 @@ class SignInSerializer(serializers.Serializer):
             'refresh_token': str(refresh_token),
             'user_id': str(user.id)
         }
+        return data
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
+    renew_password = serializers.CharField()
+
+    def validate_old_password(self, value):
+        user = self.context["user"]
+        if not user.check_password(value):
+            raise serializers.ValidationError(
+                {"password": "Your previous password is wrong"})
+        return value
+    def validate(self, attrs):
+        if attrs.get("new_password") != attrs.get("renew_password"):
+            raise serializers.ValidationError(
+                {"password" : "new passwords are not same"})
+        return attrs
+    def create(self, validated_data):
+        user = self.context["user"]
+        user.set_password(validated_data["new_password"])
+        user.save()
+        return user
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        email_validator = EmailValidator()
+        try:
+            email_validator(value)
+        except serializers.ValidationError as e:
+            raise serializers.ValidationError({"email": str(e)})
+        return value
+
+    def validate(self, data):
+        email = data.get("email")
+        
+        check_email_user = User.objects.filter(email=email)
+        if not check_email_user.exists():
+            raise serializers.ValidationError(
+                {"email": "Invalid email"})
         return data
