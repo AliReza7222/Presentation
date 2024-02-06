@@ -12,15 +12,15 @@ from utils.tags import TagObject
 class CreatePresentationView(CreateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
+    tag_class = TagObject()
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data['user'] = request.user.id
+        data_copy = request.data.copy()
+        data_copy['user'] = request.user.id
 
-        tags = data.pop('tags', [])
-        if tags:
-            data.setlist('tags', TagObject.create_list_obj_tags(tag_names=tags))
+        # get data and get tags list ==> (data, tags)
+        data, tags = self.tag_class.get_and_set_tags(data_copy)
 
         serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
@@ -30,36 +30,57 @@ class CreatePresentationView(CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
-            TagObject.add_tags_valid_data(serializer, tags),
+            self.tag_class.add_tags_valid_data(serializer, tags),
             status=status.HTTP_201_CREATED,
             headers=headers
         )
 
-# have a problem remember fix !
+
 class UpdatePresentationView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
     queryset = Presentation.objects.all()
+    tag_class = TagObject()
 
+
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=False)
+        data_copy = request.data.copy()
+        data_copy['user'] = request.user.id
+
+        # get data and get tags list ==> (data, tags)
+        data, tags = self.tag_class.get_and_set_tags(data_copy)
+
+        serializer = self.get_serializer(instance, data=data, partial=False)
         if not serializer.is_valid():
+            transaction.set_rollback(True)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
         self.perform_update(serializer)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # delete tag ==> null presentation
+        null_tags = list(
+            Tag.objects.filter(presentation__isnull=True).values_list('id', flat=True)
+        )
+        if null_tags:
+            self.tag_class.delete_unique_tag(null_tags)
+
+        return Response(
+            self.tag_class.add_tags_valid_data(serializer, tags),
+            status=status.HTTP_200_OK
+        )
 
 
 class DeletePresentationView(DestroyAPIView):
     permission_classes = (IsAuthenticated, )
     queryset = Presentation.objects.all()
+    tag_class = TagObject()
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        tag_object = TagObject()
         list_tags_id = list(instance.tags.values_list('id', flat=True))
-        tag_object.delete_unique_tag(list_tags_id)
+        self.tag_class.delete_unique_tag(list_tags_id)
         self.perform_destroy(instance)
         return Response(
             data={'message': 'The presentation was successfully deleted'},

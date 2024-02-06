@@ -3,24 +3,28 @@ from presentation.models import Tag
 
 class TagObject:
 
-    @staticmethod
-    def create_list_obj_tags(tag_names):
+    def create_list_obj_tags(self, tag_names):
         tags = list()
         for name in tag_names:
             tag, _ = Tag.objects.get_or_create(name=name)
             tags.append(str(tag.id))
         return tags
 
-    @staticmethod
-    def add_tags_valid_data(serilizer_obj, tags):
+    def add_tags_valid_data(self, serilizer_obj, tags):
         valid_data = serilizer_obj.data
         valid_data['tags'] = tags
         return valid_data
 
+    def get_and_set_tags(self, data):
+        tags = data.pop('tags', [])
+        if tags:
+            data.setlist('tags', self.create_list_obj_tags(tag_names=tags))
+        return data, tags
+
     def check_unique_tag(self, tag_id):
         unique = False
         tag = Tag.objects.get(id=tag_id)
-        if len(tag.presentation_set.all()) == 1:
+        if len(tag.presentation_set.all()) == 1 or len(tag.presentation_set.all()) == 0:
             unique = True
         return unique
 
