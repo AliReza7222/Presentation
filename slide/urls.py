@@ -11,5 +11,5 @@ else :
     router = routers.SimpleRouter()
 router.register(r'', SlideViewSet, basename='slide_viewset')
 
-app_name = "Slide"
+app_name = "slide"
 urlpatterns = router.urls

@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from .models import *
+from .models import Presentation
 
 
 class PresentationSerializer(serializers.ModelSerializer):

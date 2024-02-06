@@ -17,9 +17,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ham_code_digikala
-APP_DIR = BASE_DIR / "ham_code_digikala"
-
 env = environ.Env()
 READ_DOT_ENV_FILE = env.bool("DJANGO_DOT_ENV_FILE", default=False)
 
@@ -33,7 +30,7 @@ if READ_DOT_ENV_FILE:
 SECRET_KEY = env('SECRET_KEY')
 
 # My Custom User
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'user.User'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", False)
@@ -53,10 +50,10 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'ham_code_digikala.accounts.apps.AccountsConfig',
-    'ham_code_digikala.presentations.apps.PresentationsConfig',
-    'ham_code_digikala.Slide.apps.SlideConfig',
-    'ham_code_digikala.digikala.apps.DigikalaConfig'
+    'user.apps.UserConfig',
+    'presentation.apps.PresentationConfig',
+    'slide.apps.SlideConfig',
+    'digikala.apps.DigikalaConfig'
 ]
 
 THIRD_PARTY_APPS = [

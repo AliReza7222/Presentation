@@ -25,8 +25,8 @@ urlpatterns = [
     # simple jwt token
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # app path
-    path("api/v1/users/", include("ham_code_digikala.accounts.urls")),
-    path("api/v1/presentation/", include("ham_code_digikala.presentations.urls")),
-    path("api/v1/slide/", include("ham_code_digikala.Slide.urls")),
-    path('api/v1/digikala/', include('ham_code_digikala.digikala.urls'))
+    path("api/v1/user/", include("user.urls")),
+    path("api/v1/presentation/", include("presentation.urls")),
+    path("api/v1/slide/", include("slide.urls")),
+    path('api/v1/digikala/', include('digikala.urls'))
 ]

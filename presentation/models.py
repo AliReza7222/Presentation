@@ -1,27 +1,31 @@
 from django.db import models
 
-
-from ham_code_digikala.accounts.models import User
+from config.models import BaseModel
+from user.models import User
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
+    class Meta:
+        db_table = 'Tag'
+
     def __str__(self):
         return self.name
 
 
-class Presentation(models.Model):
+class Presentation(BaseModel):
     title = models.CharField(max_length=100, unique=True)
-    slug = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     background = models.ImageField(upload_to='images/presentation/')
     is_published = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    full_name_presenter = models.CharField(max_length=150, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    presenter = models.CharField(max_length=150, null=True)
     tags = models.ManyToManyField(Tag, blank=True)
+
+    class Meta:
+        db_table = 'Presentation'
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
         self.background.storage.delete(str(self.background.name))

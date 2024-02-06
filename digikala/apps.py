@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PresentationsConfig(AppConfig):
+class DigikalaConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'ham_code_digikala.presentations'
+    name = 'digikala'

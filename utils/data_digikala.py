@@ -13,7 +13,7 @@ class DigiKalaData:
             if data.status_code == 404:
                 response = {
                     'detail': f'Page {data.reason}',
-                    'status': 404
+                    'status': status.HTTP_404_NOT_FOUND
                 }
                 return response
 
@@ -25,7 +25,7 @@ class DigiKalaData:
             else:
                 return {
                     'detail': 'request error to connect digikala !',
-                    'status': 400
+                    'status': status.HTTP_400_BAD_REQUEST
                 }
 
     def get_chapters(self):
@@ -40,12 +40,3 @@ class DigiKalaData:
         if response.get('sections'):
             response = {'sections': response.pop('sections')}
         return response
-
-    def check_status(self, response):
-        status_response = status.HTTP_200_OK
-        status_code = response.pop('status', None)
-        if status_code == 400:
-            status_response = status.HTTP_400_BAD_REQUEST
-        elif status_code == 404:
-            status_response = status.HTTP_404_NOT_FOUND
-        return status_response

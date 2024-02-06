@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import *
+from .serializers import PresentationSerializer
 from .models import Presentation, Tag
-from ham_code_digikala.utils.tags import TagObject
+from utils.tags import TagObject
 
 
 class CreatePresentationView(CreateAPIView):
@@ -43,12 +43,12 @@ class UpdatePresentationView(UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer = self.get_serializer(instance, data=request.data, partial=False)
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         self.perform_update(serializer)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class DeletePresentationView(DestroyAPIView):
