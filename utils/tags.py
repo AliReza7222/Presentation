@@ -21,14 +21,14 @@ class TagObject:
             data.setlist('tags', self.create_list_obj_tags(tag_names=tags))
         return data, tags
 
-    def check_unique_tag(self, tag_id):
+    def check_relation_tag(self, tag_id):
         unique = False
         tag = Tag.objects.get(id=tag_id)
         if len(tag.presentation_set.all()) == 1 or len(tag.presentation_set.all()) == 0:
             unique = True
         return unique
 
-    def delete_unique_tag(self, tags):
+    def delete_tag(self, tags):
         for tag_id in tags:
-            if self.check_unique_tag(tag_id):
+            if self.check_relation_tag(tag_id):
                 Tag.objects.get(id=tag_id).delete()

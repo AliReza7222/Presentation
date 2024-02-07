@@ -52,7 +52,11 @@ class UpdatePresentationView(UpdateAPIView):
         # get data and get tags list ==> (data, tags)
         data, tags = self.tag_class.get_and_set_tags(data_copy)
 
-        serializer = self.get_serializer(instance, data=data, partial=False)
+        serializer = self.get_serializer(
+            instance,
+            data=data,
+            partial=kwargs.get('partial', False)
+        )
         if not serializer.is_valid():
             transaction.set_rollback(True)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -64,7 +68,7 @@ class UpdatePresentationView(UpdateAPIView):
             Tag.objects.filter(presentation__isnull=True).values_list('id', flat=True)
         )
         if null_tags:
-            self.tag_class.delete_unique_tag(null_tags)
+            self.tag_class.delete_tag(null_tags)
 
         return Response(
             self.tag_class.add_tags_valid_data(serializer, tags),
@@ -80,7 +84,7 @@ class DeletePresentationView(DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         list_tags_id = list(instance.tags.values_list('id', flat=True))
-        self.tag_class.delete_unique_tag(list_tags_id)
+        self.tag_class.delete_tag(list_tags_id)
         self.perform_destroy(instance)
         return Response(
             data={'message': 'The presentation was successfully deleted'},
