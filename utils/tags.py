@@ -24,7 +24,8 @@ class TagObject:
     def check_relation_tag(self, tag_id):
         unique = False
         tag = Tag.objects.get(id=tag_id)
-        if len(tag.presentation_set.all()) == 1 or len(tag.presentation_set.all()) == 0:
+        tag_number_relation = tag.presentation_set.all()
+        if len(tag_number_relation) == 1 or len(tag_number_relation) == 0:
             unique = True
         return unique
 
