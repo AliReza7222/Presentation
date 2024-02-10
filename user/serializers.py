@@ -74,7 +74,7 @@ class ProfileSrializer(serializers.ModelSerializer):
         ]
 
 
-class SignInSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
@@ -99,6 +99,7 @@ class SignInSerializer(serializers.Serializer):
             'user_id': str(user.id)
         }
         return data
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField()
