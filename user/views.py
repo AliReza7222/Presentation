@@ -9,12 +9,12 @@ from .serializers import *
 from .models import Profile
 
 
-class SignUpUserView(CreateAPIView):
+class RegisterUserView(CreateAPIView):
     serializer_class = UserSerializer
 
 
-class SignInUserView(TokenObtainPairView):
-    serializer_class = SignInSerializer
+class LoginUserView(TokenObtainPairView):
+    serializer_class = LoginSerializer
 
 
 class UpdateProfileUserView(UpdateAPIView):
@@ -32,7 +32,7 @@ class UpdateProfileUserView(UpdateAPIView):
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         self.perform_update(serializer)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ChangePasswordView(APIView):
