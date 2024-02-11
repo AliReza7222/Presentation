@@ -20,8 +20,7 @@ class LoginUserView(TokenObtainPairView):
 class UpdateProfileUserView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = ProfileSrializer
-    queryset=Profile.objects.all()
-
+    queryset = Profile.objects.all()
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

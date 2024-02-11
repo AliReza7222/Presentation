@@ -9,7 +9,11 @@ from .models import Slide
 
 
 class SlideViewSet(
-    DestroyModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+    DestroyModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    GenericViewSet
+):
 
     permissions_classes = (IsAuthenticated, )
     serializer_class = SlideSerializer

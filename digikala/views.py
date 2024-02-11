@@ -12,7 +12,6 @@ class GetChaptersView(GenericAPIView):
     def get(self, request, **kwargs):
         object_digikala_data = DigiKalaData()
         data = object_digikala_data.get_chapters()
-        status_response = object_digikala_data.check_status(data)
         status_request = data.get('status', status.HTTP_200_OK)
         return Response(data, status=status_request)
 
