@@ -123,6 +123,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
         return user
 
+    class Meta:
+        fields = '__all__'
+
 
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
