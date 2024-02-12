@@ -1,6 +1,5 @@
 import requests
 from rest_framework import status
-from requests.exceptions import HTTPError
 
 
 class DigiKalaData:
@@ -8,25 +7,35 @@ class DigiKalaData:
 
     def get_data(self, url):
         try:
-            data = requests.get(url)
+            response = requests.get(url)
 
-            if data.status_code == 404:
-                response = {
-                    'detail': f'Page {data.reason}',
-                    'status': status.HTTP_404_NOT_FOUND
-                }
-                return response
+            # Raise an error when the status response is not 200
+            response.raise_for_status()
 
-            return data.json()
+            return response.json()
 
+        except requests.ConnectionError as error:
+            return {
+                'detail': "A network-related error occurred",
+                'status': status.HTTP_503_SERVICE_UNAVAILABLE
+            }
+
+        except requests.Timeout as error:
+            return {
+                'detail': "A timeout occurred:",
+                'status': status.HTTP_504_GATEWAY_TIMEOUT
+            }
+
+        except requests.HTTPError as error:
+            return {
+                'detail': error.response.reason,
+                'status': error.response.status_code
+            }
         except Exception as error:
-            if isinstance(error, HTTPError):
-                return {'detail': error.response.reason}
-            else:
-                return {
-                    'detail': 'request error to connect digikala !',
-                    'status': status.HTTP_400_BAD_REQUEST
-                }
+            return {
+                'detail': "An error occurred please try again !",
+                'status': status.HTTP_400_BAD_REQUEST
+            }
 
     def get_chapters(self):
         response = self.get_data(self.url_chapters)
