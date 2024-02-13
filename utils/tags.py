@@ -1,27 +1,27 @@
 from presentation.models import Tag
 
 
-class TagObject:
+class TagOperations:
 
-    def create_list_obj_tags(self, tag_names):
+    @staticmethod
+    def create_list_obj_tags(tag_names):
         tags = list()
         for name in tag_names:
             tag, _ = Tag.objects.get_or_create(name=name)
             tags.append(str(tag.id))
         return tags
 
-    def add_tags_valid_data(self, serilizer_obj, tags):
-        valid_data = serilizer_obj.data
-        valid_data['tags'] = tags
-        return valid_data
-
-    def get_and_set_tags(self, data):
-        tags = data.pop('tags', [])
+    @staticmethod
+    def get_and_set_tags(data):
+        tags = data.getlist('tags', [])
         if tags:
-            data.setlist('tags', self.create_list_obj_tags(tag_names=tags))
-        return data, tags
+            data.setlist('tags', TagOperations.create_list_obj_tags(tag_names=tags))
+        else:
+            data.setlist('tags', tags)
+        return data
 
-    def check_relation_tag(self, tag_id):
+    @staticmethod
+    def check_relation_tag(tag_id):
         unique = False
         tag = Tag.objects.get(id=tag_id)
         tag_number_relation = tag.presentation_set.all()
@@ -29,7 +29,8 @@ class TagObject:
             unique = True
         return unique
 
-    def delete_tag(self, tags):
+    @classmethod
+    def delete_tag(cls, tags):
         for tag_id in tags:
-            if self.check_relation_tag(tag_id):
+            if cls.check_relation_tag(tag_id):
                 Tag.objects.get(id=tag_id).delete()

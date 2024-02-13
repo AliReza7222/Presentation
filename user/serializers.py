@@ -33,7 +33,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_username(self, username):
         if len(username) <= 6 or len(username) >= 21:
-            raise serializers.ValidationError("The number of characters in the username must be greater than 7 and less than 20 characters !")
+            raise serializers.ValidationError(
+                "The number of characters in the username must be greater than 7 and less than 20 characters !"
+            )
         elif not re.match('^[a-zA-Z].+$', username):
             raise serializers.ValidationError("The username start with words !")
         return username
@@ -112,11 +114,13 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"password": "Your previous password is wrong"})
         return value
+
     def validate(self, attrs):
         if attrs.get("new_password") != attrs.get("renew_password"):
             raise serializers.ValidationError(
-                {"password" : "new passwords are not same"})
+                {"password": "new passwords are not same"})
         return attrs
+
     def create(self, validated_data):
         user = self.context["user"]
         user.set_password(validated_data["new_password"])
