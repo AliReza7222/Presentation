@@ -4,9 +4,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from .serializers import *
 from .models import Profile
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class RegisterUserView(CreateAPIView):
@@ -34,22 +35,33 @@ class UpdateProfileUserView(UpdateAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# manual_parameters
+old_password = openapi.Parameter('Old password', in_=openapi.TYPE_INTEGER,
+                           type=openapi.TYPE_INTEGER)
+new_password =  openapi.Parameter('New password', in_=openapi.TYPE_INTEGER,
+                           type=openapi.TYPE_INTEGER)
+renew_password =  openapi.Parameter('Repeat password', in_=openapi.TYPE_INTEGER,
+                           type=openapi.TYPE_INTEGER)
+email = openapi.Parameter('Email', in_=openapi.TYPE_STRING,
+                           type=openapi.FORMAT_EMAIL)
 
 class ChangePasswordView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @swagger_auto_schema(manual_parameters= [old_password,new_password,renew_password])
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data,
                                               context={"user": request.user})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
-        return Response("password changed", status=status.HTTP_200_OK)
+        return Response({"message": "password changed"}, status=status.HTTP_200_OK)
 
 
 class ResetPasswordView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @swagger_auto_schema(manual_parameters= [email],)
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
 
