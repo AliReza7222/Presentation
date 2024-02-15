@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.utils.text import slugify
+from slugify import slugify
 from rest_framework import serializers
 
 from .models import Presentation
@@ -16,8 +16,6 @@ class PresentationSerializer(serializers.ModelSerializer):
 
     def validate_slug(self, slug):
         slug = slugify(slug)
-        if not slug:
-            raise serializers.ValidationError("Please enter a valid slug !")
         return slug
 
     def create(self, validated_data):
