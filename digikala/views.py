@@ -1,10 +1,13 @@
+from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+from .serializers import GetUrlSrializer
 from utils.data_digikala import DigiKalaData
 
 
@@ -25,6 +28,26 @@ class GetSectionView(APIView):
     @swagger_auto_schema(manual_parameters=[slug])
     def get(self, request, **kwargs):
         slug = request.query_params.get('slug') or 'None'
-        data = DigiKalaData.get_section(slug)
+        data = DigiKalaData.get_sections(slug)
         status_request = data.get('status', status.HTTP_200_OK)
         return Response(data, status_request)
+
+
+class GetSectionByLinkView(GenericAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = GetUrlSrializer
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        data = DigiKalaData.get_section_by_link(url=serializer.data.get('url'))
+        status_request = data.get('status', status.HTTP_200_OK)
+
+        print(serializer.data)
+        return Response(
+            data,
+            status = status_request
+        )
