@@ -1,27 +1,25 @@
 from django.db import transaction
+from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import PresentationSerializer
 from .models import Presentation, Tag
 from utils.tags import TagOperations
+from .serializers import *
 
 
 class CreatePresentationView(CreateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
+    parser_classes = [MultiPartParser]
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        data_copy = request.data.copy()
-        data_copy['user'] = request.user.id
-
         # get data with list tag object
-        data = TagOperations.get_and_set_tags(data_copy)
-
-        serializer = self.get_serializer(data=data)
+        data = TagOperations.get_and_set_tags(request.data.copy())
+        serializer = self.get_serializer(data=data, context={'user': request.user})
         if not serializer.is_valid():
             transaction.set_rollback(True)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -38,13 +36,13 @@ class CreatePresentationView(CreateAPIView):
 class UpdatePresentationView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
+    parser_classes = [MultiPartParser]
     queryset = Presentation.objects.all()
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         data_copy = request.data.copy()
-        data_copy['user'] = request.user.id
 
         # get data with list tag object
         data = TagOperations.get_and_set_tags(data_copy)
@@ -83,6 +81,6 @@ class DeletePresentationView(DestroyAPIView):
         TagOperations.delete_tag(list_tags_id)
         self.perform_destroy(instance)
         return Response(
-            data={'message': 'The presentation was successfully deleted'},
+            {'message': 'The presentation was successfully deleted'},
             status=status.HTTP_204_NO_CONTENT
         )

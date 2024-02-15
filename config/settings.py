@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 import environ
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -100,18 +101,37 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# AUTHENTICATION
+# Swagger config
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        "Auth Token eg [Bearer {JWT}]": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+}
+
+# Authentication
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
+
+# Config simplejwt
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "SLIDING_TOKEN_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=7),
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {'default': env.db('DATABASE_URL')}
 
-# Email Config
+# Email config
 
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
@@ -134,19 +154,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Django Rest Framework
+# Django rest framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":(
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication"
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",)
 }
 
-# csrf http only
+# Csrf httponly
 CSRF_COOKIE_HTTPONLY = True
 
-# session cookie http only
+# Session cookie httponly
 SESSION_COOKIE_HTTPONLY = True
 
 # Internationalization
@@ -166,7 +185,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Manage Media Files
+# Manage media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 
