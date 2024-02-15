@@ -45,7 +45,7 @@ class ChangePasswordView(GenericAPIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, context={"user": request.user})
+        serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

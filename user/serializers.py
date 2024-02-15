@@ -118,7 +118,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     renew_password = serializers.CharField(write_only=True)
 
     def validate_old_password(self, old_password):
-        user = self.context["user"]
+        user = self.context["request"].user
         if not user.check_password(old_password):
             raise serializers.ValidationError("Your old password is wrong !")
         return old_password
@@ -137,7 +137,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        user = self.context["user"]
+        user = self.context["request"].user
         user.set_password(validated_data["new_password"])
         user.save()
         return user

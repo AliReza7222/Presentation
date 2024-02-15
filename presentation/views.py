@@ -19,7 +19,7 @@ class CreatePresentationView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         # get data with list tag object
         data = TagOperations.get_and_set_tags(request.data.copy())
-        serializer = self.get_serializer(data=data, context={'user': request.user})
+        serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             transaction.set_rollback(True)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)

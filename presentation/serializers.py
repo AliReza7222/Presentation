@@ -14,5 +14,6 @@ class PresentationSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        validated_data['user'] = self.context.get('user')
+        user = self.context['request'].user
+        validated_data['user'] = user
         return super().create(validated_data)
