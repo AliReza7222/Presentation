@@ -11,7 +11,7 @@ class PresentationSerializer(serializers.ModelSerializer):
         model = Presentation
         fields ="__all__"
         extra_kwargs = {
-            'user': {'read_only': True}
+            'user': {'read_only': True},
         }
 
     def validate_slug(self, slug):
