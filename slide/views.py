@@ -19,7 +19,6 @@ class SlideViewSet(
     permission_classes = (IsAuthenticated, )
     serializer_class = SlideSerializer
     queryset = Slide.objects.all()
-    parser_classes = [MultiPartParser, JSONParser, FormParser]
     lookup_field = 'pk'
 
     def destroy(self, request, *args, **kwargs):
