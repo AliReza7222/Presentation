@@ -11,5 +11,5 @@ urlpatterns = [
     path("list/", ListPresentationView.as_view(), name='list_presentation'),
     path("delete/<int:pk>/", DeletePresentationView.as_view(), name="delete_presentation"),
     path("<int:presentation_id>", PresentationSlideListView.as_view(), name="list_presentation_slides"),
-    path("<slug:slug>", PresentationSlidesView.as_view(), name="presentation_slides"),
+    path("<slug:slug>", PresentationBySlugView.as_view(), name="presentation_slides_by_slug"),
 ]

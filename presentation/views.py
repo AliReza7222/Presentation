@@ -95,7 +95,7 @@ class DeletePresentationView(DestroyAPIView):
 
 
 class ListPresentationView(ListAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = PresentationSerializer
 
     def get_queryset(self):
@@ -121,32 +121,31 @@ class ListPresentationView(ListAPIView):
 
 
 class PresentationSlideListView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, presentation_id):
-        presentation = get_object_or_404(Presentation, id=presentation_id)
-        slides = Slide.objects.filter(presentation_id=presentation.id)
-        data =[{
-                'section_link': slide.section_link,
-                'section_id': slide.section_id,
-                'content': slide.content,
-            }
-            for slide in slides]
-        return Response({"slides" : data}, status=status.HTTP_200_OK)
+        try:
+            presentation = get_object_or_404(Presentation, id=presentation_id)
+            slides = Slide.objects.filter(presentation_id=presentation.id)
+            data = [slide for slide in slides]
+
+            return Response({"data": data}, status=status.HTTP_200_OK)
+        
+        except Presentation.DoesNotExist:
+            return Response({"error": "Presentation not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class PresentationSlidesView(ListAPIView):
+class PresentationBySlugView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, slug):
         try:
             presentation = get_object_or_404(Presentation, slug=slug)
             slides = Slide.objects.filter(presentation_id=presentation.id)
             presentation.increment_views_count()
-            data =[{
-                    'section_link': slide.section_link,
-                    'section_id': slide.section_id,
-                    'content': slide.content,
-                }
-                for slide in slides]
+            data = [slide for slide in slides]
 
-            return Response({'slides': data}, status=status.HTTP_200_OK)
+            return Response({"data": data}, status=status.HTTP_200_OK)
 
         except Presentation.DoesNotExist:
             return Response({"error": "Presentation not found"}, status=status.HTTP_404_NOT_FOUND)

@@ -22,7 +22,7 @@ class Presentation(BaseModel):
     is_published = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     presenter = models.CharField(max_length=150, null=True)
-    cnt_view = models.PositiveIntegerField(default=0)
+    cnt_view = models.PositiveIntegerField(default=0, editable=False)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def increment_views_count(self):
