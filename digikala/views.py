@@ -46,7 +46,6 @@ class GetSectionByLinkView(GenericAPIView):
         data = DigiKalaData.get_section_by_link(url=serializer.data.get('url'))
         status_request = data.get('status', status.HTTP_200_OK)
 
-        print(serializer.data)
         return Response(
             data,
             status = status_request
