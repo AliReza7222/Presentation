@@ -8,8 +8,7 @@ from config.models import BaseModel
 class User(AbstractUser, BaseModel):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     email = models.EmailField(unique=True)
-    # default filed in_active = false now we are in test so default in_active = true
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=258)
 
     class Meta:
