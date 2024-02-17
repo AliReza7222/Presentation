@@ -4,7 +4,7 @@ from rest_framework import status
 
 
 class DigiKalaData:
-    URL_DIGIKALA = 'https://about.digikala.com/api/v1/dsb/report1401/chapters/'
+    URL_DIGIKALA = 'https://about.digikala.com/api/v1/dsb/report1401/chapters'
 
     @staticmethod
     def get_data(url: str) -> dict:
@@ -47,8 +47,26 @@ class DigiKalaData:
         return response
 
     @classmethod
-    def get_section(cls, slug: str) -> dict:
-        response = cls.get_data(cls.URL_DIGIKALA + slug)
+    def get_sections(cls, slug: str) -> dict:
+        url = '/'.join([cls.URL_DIGIKALA, slug])
+        response = cls.get_data(url)
         if sections := response.get('sections'):
             response = {'data': sections}
+        return response
+
+    @classmethod
+    def get_section_by_link(cls, url: str) -> dict:
+        split_url = url.split('/')
+
+        if not '/'.join(split_url[:-2]) == cls.URL_DIGIKALA:
+            return {'detail': 'NotFound', 'status': status.HTTP_404_NOT_FOUND}
+
+        slug, html_id = split_url[-2], split_url[-1].lstrip('#')
+        response = cls.get_sections(slug)
+
+        if sections := response.get('data'):
+            for section in sections:
+                if section.get('html_id') == html_id:
+                    return {'data': section}
+            return {'detail': 'Invalid html_id !', 'status': status.HTTP_400_BAD_REQUEST}
         return response
