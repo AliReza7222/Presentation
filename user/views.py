@@ -1,4 +1,4 @@
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, UpdateAPIView, GenericAPIView)
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -17,19 +17,18 @@ class RegisterUserView(CreateAPIView):
         In fact, we are in the test!
     """
     serializer_class = UserSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
 
 class LoginUserView(TokenObtainPairView):
     serializer_class = LoginSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
 
 class UpdateProfileUserView(GenericAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = ProfileSrializer
-    parser_classes = [MultiPartParser]
-    queryset = Profile.objects.all()
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def patch(self, request, *args, **kwargs):
         instance = request.user.profile
@@ -45,7 +44,7 @@ class UpdateProfileUserView(GenericAPIView):
 
 class ActiveUserView(GenericAPIView):
     serializer_class = ActiveUserSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -68,7 +67,7 @@ class ActiveUserView(GenericAPIView):
 class ChangePasswordView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ChangePasswordSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -83,7 +82,7 @@ class ChangePasswordView(GenericAPIView):
 class ResetPasswordView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ResetPasswordSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
