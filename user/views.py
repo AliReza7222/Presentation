@@ -1,7 +1,6 @@
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, UpdateAPIView, GenericAPIView)
-from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,21 +25,20 @@ class LoginUserView(TokenObtainPairView):
     parser_classes = [MultiPartParser]
 
 
-class UpdateProfileUserView(UpdateAPIView):
+class UpdateProfileUserView(GenericAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = ProfileSrializer
     parser_classes = [MultiPartParser]
     queryset = Profile.objects.all()
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+    def patch(self, request, *args, **kwargs):
         instance = request.user.profile
 
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-        self.perform_update(serializer)
+        serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
