@@ -1,5 +1,6 @@
 pillow==10.1.0
 requests==2.31.0
+unicode-slugify==0.1.5
 
 
 # Django
