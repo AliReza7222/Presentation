@@ -10,8 +10,10 @@ from rest_framework.generics import (
     DestroyAPIView,
     ListAPIView
 )
-
+from django.shortcuts import get_object_or_404
+from .serializers import PresentationSerializer
 from .models import Presentation, Tag
+from slide.models import Slide
 from utils.tags import TagOperations
 from .serializers import *
 
@@ -116,3 +118,38 @@ class ListPresentationView(ListAPIView):
             response,
             status = status.HTTP_200_OK
         )
+
+
+class PresentationSlideListView(ListAPIView):
+    def get(self, request, presentation_id):
+        presentation = get_object_or_404(Presentation, id=presentation_id)
+        slides = Slide.objects.filter(presentation_id=presentation.id)
+        if not slides:
+            return Response({"error" : "Presentation or slides not found"}, status=status.HTTP_404_NOT_FOUND) 
+        data =[{
+                'section_link': slide.section_link,
+                'section_id': slide.section_id,
+                'content': slide.content,
+            }
+            for slide in slides]
+        return Response({"slides" : data}, status=status.HTTP_200_OK)
+
+
+class PresentationSlidesView(ListAPIView):
+    def get(self, request, slug):
+        try:
+            presentation = get_object_or_404(Presentation, slug=slug)
+            slides = Slide.objects.filter(presentation_id=presentation.id)
+            print(presentation.id)
+            presentation.increment_views_count()
+            data =[{
+                    'section_link': slide.section_link,
+                    'section_id': slide.section_id,
+                    'content': slide.content,
+                }
+                for slide in slides]
+
+            return Response({'slides': data}, status=status.HTTP_200_OK)
+
+        except Presentation.DoesNotExist:
+            return Response({"error": "Presentation not found"}, status=status.HTTP_404_NOT_FOUND)
