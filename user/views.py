@@ -29,7 +29,6 @@ class UpdateProfileUserView(GenericAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = ProfileSrializer
     parser_classes = [MultiPartParser]
-    queryset = Profile.objects.all()
 
     def patch(self, request, *args, **kwargs):
         instance = request.user.profile
