@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.core.paginator import Paginator
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -19,7 +19,7 @@ from .serializers import *
 class CreatePresentationView(CreateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -42,7 +42,7 @@ class CreatePresentationView(CreateAPIView):
 class UpdatePresentationView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
     queryset = Presentation.objects.all()
 
     @transaction.atomic

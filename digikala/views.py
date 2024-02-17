@@ -1,4 +1,4 @@
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -36,7 +36,7 @@ class GetSectionView(APIView):
 class GetSectionByLinkView(GenericAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = GetUrlSrializer
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
