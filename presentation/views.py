@@ -138,7 +138,6 @@ class PresentationSlidesView(ListAPIView):
         try:
             presentation = get_object_or_404(Presentation, slug=slug)
             slides = Slide.objects.filter(presentation_id=presentation.id)
-            print(presentation.id)
             presentation.increment_views_count()
             data =[{
                     'section_link': slide.section_link,
