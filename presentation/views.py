@@ -124,8 +124,6 @@ class PresentationSlideListView(ListAPIView):
     def get(self, request, presentation_id):
         presentation = get_object_or_404(Presentation, id=presentation_id)
         slides = Slide.objects.filter(presentation_id=presentation.id)
-        if not slides:
-            return Response({"error" : "Presentation or slides not found"}, status=status.HTTP_404_NOT_FOUND) 
         data =[{
                 'section_link': slide.section_link,
                 'section_id': slide.section_id,
