@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin
@@ -15,9 +16,10 @@ class SlideViewSet(
     GenericViewSet
 ):
 
-    permissions_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
     serializer_class = SlideSerializer
     queryset = Slide.objects.all()
+    parser_classes = [MultiPartParser]
     lookup_field = 'pk'
 
     def destroy(self, request, *args, **kwargs):

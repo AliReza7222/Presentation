@@ -8,4 +8,12 @@ class PresentationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Presentation
-        fields = '__all__'
+        fields ="__all__"
+        extra_kwargs = {
+            'user': {'read_only': True}
+        }
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        validated_data['user'] = user
+        return super().create(validated_data)

@@ -1,11 +1,13 @@
 import requests
+
 from rest_framework import status
 
 
 class DigiKalaData:
-    url_chapters = 'https://about.digikala.com/api/v1/dsb/report1401/chapters/'
+    URL_DIGIKALA = 'https://about.digikala.com/api/v1/dsb/report1401/chapters/'
 
-    def get_data(self, url):
+    @staticmethod
+    def get_data(url: str) -> dict:
         try:
             response = requests.get(url)
 
@@ -37,15 +39,16 @@ class DigiKalaData:
                 'status': status.HTTP_400_BAD_REQUEST
             }
 
-    def get_chapters(self):
-        response = self.get_data(self.url_chapters)
-        if response.get('results'):
-            response = {'chapters': response.get('results')}
+    @classmethod
+    def get_chapters(cls) -> dict:
+        response = cls.get_data(cls.URL_DIGIKALA)
+        if results := response.get('results'):
+            response = {'data': results}
         return response
 
-    def get_section(self, slug):
-        url_sction = self.url_chapters + slug
-        response = self.get_data(url_sction)
-        if response.get('sections'):
-            response = {'sections': response.pop('sections')}
+    @classmethod
+    def get_section(cls, slug: str) -> dict:
+        response = cls.get_data(cls.URL_DIGIKALA + slug)
+        if sections := response.get('sections'):
+            response = {'data': sections}
         return response

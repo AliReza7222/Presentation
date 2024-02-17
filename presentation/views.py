@@ -1,26 +1,30 @@
 from django.db import transaction
+from django.core.paginator import Paginator
+from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import (
+    CreateAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+    ListAPIView
+)
 
-from .serializers import PresentationSerializer
 from .models import Presentation, Tag
 from utils.tags import TagOperations
+from .serializers import *
 
 
 class CreatePresentationView(CreateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
+    parser_classes = [MultiPartParser]
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        data_copy = request.data.copy()
-        data_copy['user'] = request.user.id
-
         # get data with list tag object
-        data = TagOperations.get_and_set_tags(data_copy)
-
+        data = TagOperations.get_and_set_tags(request.data.copy())
         serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             transaction.set_rollback(True)
@@ -38,13 +42,13 @@ class CreatePresentationView(CreateAPIView):
 class UpdatePresentationView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PresentationSerializer
+    parser_classes = [MultiPartParser]
     queryset = Presentation.objects.all()
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         data_copy = request.data.copy()
-        data_copy['user'] = request.user.id
 
         # get data with list tag object
         data = TagOperations.get_and_set_tags(data_copy)
@@ -83,6 +87,32 @@ class DeletePresentationView(DestroyAPIView):
         TagOperations.delete_tag(list_tags_id)
         self.perform_destroy(instance)
         return Response(
-            data={'message': 'The presentation was successfully deleted'},
+            {'message': 'The presentation was successfully deleted'},
             status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class ListPresentationView(ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PresentationSerializer
+
+    def get_queryset(self):
+        queryset = Presentation.objects.filter(user=self.request.user)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        page_obj = Paginator(queryset, 5)
+        response = {
+            "pagination":{
+                "count": page_obj.count,
+                "data_per_page": 5,
+                "page_number": page_obj.num_pages
+            },
+            "data": serializer.data
+        }
+        return Response(
+            response,
+            status = status.HTTP_200_OK
         )
