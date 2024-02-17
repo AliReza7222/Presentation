@@ -1,4 +1,5 @@
 from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
+from django.db.models import Sum
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, UpdateAPIView, GenericAPIView)
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -7,6 +8,11 @@ from rest_framework.response import Response
 
 from .serializers import *
 from .models import Profile, User
+from presentation.models import Presentation
+from slide.models import Slide
+from .models import Profile
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class RegisterUserView(CreateAPIView):
@@ -91,3 +97,22 @@ class ResetPasswordView(GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"message" : "rest your password . (test)"}, status=status.HTTP_200_OK)
+
+
+class DashboardView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        presentations = Presentation.objects.filter(user=request.user)
+        total_views_count = presentations.aggregate(total_views_count=Sum('cnt_view'))
+        presentations_count = presentations.count()
+        slides_count = 0
+        for presentation in presentations:
+            slide_count = Slide.objects.filter(presentation_id= presentation).count()
+            slides_count += slide_count
+        data = {
+                "presentation_cont" : presentations_count,
+                "slide_count" : slides_count,
+                "presentation_views" : total_views_count.get('total_views_count', 0),
+                }
+        return Response(data, status=status.HTTP_200_OK)
