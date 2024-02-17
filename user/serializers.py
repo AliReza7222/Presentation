@@ -4,12 +4,13 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Profile
+from utils.create_code import CreateCode
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(max_length=50, write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
@@ -20,10 +21,13 @@ class UserSerializer(serializers.ModelSerializer):
             'password',
             'confirm_password',
             'created_at',
-            'activation_code'
+            'is_active',
+            'activation_code',
         )
         extra_kwargs = {
             'password': {'write_only': True},
+            'activation_code': {'read_only': True},
+            'is_active': {'read_only': True},
         }
 
     def validate_username(self, username):
@@ -51,6 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         del validated_data["confirm_password"]
         validated_data["password"] = make_password(validated_data["password"])
+        validated_data['activation_code'] = CreateCode.get_token()
         return super().create(validated_data)
 
 
@@ -151,3 +156,7 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"email": "Invalid email"})
         return data
+
+
+class ActiveUserSerializer(serializers.Serializer):
+    activation_code = serializers.CharField(write_only=True)
