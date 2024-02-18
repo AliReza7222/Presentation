@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .models import Profile
 from utils.create_code import CreateCode
 

@@ -9,8 +9,10 @@ from rest_framework.generics import (
     DestroyAPIView,
     ListAPIView
 )
-
+from django.shortcuts import get_object_or_404
+from .serializers import PresentationSerializer
 from .models import Presentation, Tag
+from slide.models import Slide
 from utils.tags import TagOperations
 from .serializers import *
 
@@ -90,7 +92,7 @@ class DeletePresentationView(DestroyAPIView):
 
 
 class ListPresentationView(ListAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = PresentationSerializer
 
     def get_queryset(self):
@@ -113,3 +115,34 @@ class ListPresentationView(ListAPIView):
             response,
             status = status.HTTP_200_OK
         )
+
+
+class PresentationSlideListView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, presentation_id):
+        try:
+            presentation = get_object_or_404(Presentation, id=presentation_id)
+            slides = Slide.objects.filter(presentation_id=presentation.id)
+            data = [slide for slide in slides]
+
+            return Response({"data": data}, status=status.HTTP_200_OK)
+        
+        except Presentation.DoesNotExist:
+            return Response({"error": "Presentation not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class PresentationBySlugView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, slug):
+        try:
+            presentation = get_object_or_404(Presentation, slug=slug)
+            slides = Slide.objects.filter(presentation_id=presentation.id)
+            presentation.increment_views_count()
+            data = [slide for slide in slides]
+
+            return Response({"data": data}, status=status.HTTP_200_OK)
+
+        except Presentation.DoesNotExist:
+            return Response({"error": "Presentation not found"}, status=status.HTTP_404_NOT_FOUND)
