@@ -48,10 +48,9 @@ class UpdatePresentationView(UpdateAPIView):
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        data_copy = request.data.copy()
 
         # get data with list tag object
-        data = TagOperations.get_and_set_tags(data_copy)
+        data, tags = TagOperations.get_tags(request.data.copy())
 
         serializer = self.get_serializer(
             instance,
@@ -63,6 +62,7 @@ class UpdatePresentationView(UpdateAPIView):
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
         self.perform_update(serializer)
+        instance.tags.set(tags)
 
         # delete tags ==> null presentation
         null_tags = list(
