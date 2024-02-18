@@ -24,13 +24,14 @@ class CreatePresentationView(CreateAPIView):
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         # get data with list tag object
-        data = TagOperations.get_and_set_tags(request.data.copy())
+        data, tags = TagOperations.get_tags(request.data.copy())
         serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             transaction.set_rollback(True)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-        self.perform_create(serializer)
+        instance = serializer.save()
+        instance.tags.set(tags)
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data,
@@ -127,7 +128,7 @@ class PresentationSlideListView(ListAPIView):
             data = [slide for slide in slides]
 
             return Response({"data": data}, status=status.HTTP_200_OK)
-        
+
         except Presentation.DoesNotExist:
             return Response({"error": "Presentation not found"}, status=status.HTTP_404_NOT_FOUND)
 
