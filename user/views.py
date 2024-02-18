@@ -106,8 +106,8 @@ class DashboardView(GenericAPIView):
             slide_count = Slide.objects.filter(presentation_id= presentation).count()
             slides_count += slide_count
         data = {
-                "presentation_cont" : presentations_count,
+                "presentation_count" : presentations_count,
                 "slide_count" : slides_count,
                 "presentation_views" : total_views_count.get('total_views_count', 0),
                 }
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({"data" : data}, status=status.HTTP_200_OK)
