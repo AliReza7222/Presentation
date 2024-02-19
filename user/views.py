@@ -81,7 +81,6 @@ class ChangePasswordView(GenericAPIView):
 
 
 class ResetPasswordView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = ResetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
