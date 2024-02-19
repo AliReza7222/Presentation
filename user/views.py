@@ -1,6 +1,4 @@
-from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
 from django.db.models import Sum
-
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, UpdateAPIView, GenericAPIView)
 from rest_framework_simplejwt.views import TokenObtainPairView
