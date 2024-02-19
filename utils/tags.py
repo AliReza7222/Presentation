@@ -13,14 +13,12 @@ class TagOperations:
             tags.append(str(tag.id))
         return tags
 
-    @staticmethod
-    def get_and_set_tags(data: QueryDict) -> QueryDict:
-        tags = data.getlist('tags', [])
+    @classmethod
+    def get_tags(cls, data: dict) -> dict:
+        tags = data.pop('tags', [])
         if tags:
-            data.setlist('tags', TagOperations.create_list_obj_tags(tag_names=tags))
-        else:
-            data.setlist('tags', tags)
-        return data
+            tags = cls.create_list_obj_tags(tags)
+        return data, tags
 
     @staticmethod
     def check_relation_tag(tag_id: int) -> bool:
