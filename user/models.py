@@ -23,14 +23,15 @@ class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    avatar = models.ImageField(upload_to='images/avata_profile/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='images/avata_profile/', blank=True)
     bio = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = 'Profile'
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
-        self.avatar.storage.delete(str(self.avatar.name))
+        if self.avatar:
+            self.avatar.storage.delete(str(self.avatar.name))
         return super(Profile, self).delete(*args, **kwargs)
 
     def __str__(self):

@@ -15,8 +15,8 @@ class PresentationSerializer(serializers.ModelSerializer):
             'slug': {'read_only': True}
         }
 
-    def create(self, validated_data):
+    def validate(self, validated_data):
         user = self.context['request'].user
         validated_data['user'] = user
         validated_data['slug'] = slugify(validated_data['title'])
-        return super().create(validated_data)
+        return validated_data
