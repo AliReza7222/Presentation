@@ -11,4 +11,4 @@ urlpatterns = [
     path("list/", ListPresentationView.as_view(), name='list_presentation'),
     path("<int:presentation_id>/", PresentationView.as_view(), name="presentation_view"),
     path("<slug:slug>/", PresentationBySlugView.as_view(), name="presentation_by_slug"),
-
+]
