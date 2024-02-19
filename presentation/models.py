@@ -18,7 +18,7 @@ class Presentation(BaseModel):
     title = models.CharField(max_length=100, unique=True)
     slug = models.CharField(max_length=100, unique=True)
     description = models.TextField()
-    background = models.ImageField(upload_to='images/presentation/')
+    background = models.ImageField(upload_to='images/presentation/', blank=True)
     is_published = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     presenter = models.CharField(max_length=150, null=True)
