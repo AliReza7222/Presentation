@@ -2,7 +2,7 @@ from django.db import transaction
 from slugify import slugify
 from rest_framework import serializers
 
-from .models import Presentation
+from .models import Presentation, Tag
 
 
 class PresentationSerializer(serializers.ModelSerializer):

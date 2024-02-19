@@ -34,3 +34,10 @@ class TagOperations:
         for tag_id in tags:
             if cls.check_relation_tag(tag_id):
                 Tag.objects.get(id=tag_id).delete()
+
+    @classmethod
+    def data_with_tags_name(cls, data: dict) -> dict:
+        tag_ids = data.get('tags', [])
+        tags = [Tag.objects.get(id=tag_id).name for tag_id in tag_ids]
+        data['tags'] = tags
+        return data

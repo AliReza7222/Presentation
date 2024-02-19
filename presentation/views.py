@@ -12,6 +12,7 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
 )
+
 from .models import Presentation, Tag
 from .serializers import PresentationSerializer
 from slide.serializers import SlideSerializer
@@ -36,7 +37,7 @@ class CreatePresentationView(CreateAPIView):
         instance.tags.set(tags)
         headers = self.get_success_headers(serializer.data)
         return Response(
-            serializer.data,
+            TagOperations.data_with_tags_name(serializer.data),
             status=status.HTTP_201_CREATED,
             headers=headers
         )
@@ -74,7 +75,7 @@ class UpdatePresentationView(UpdateAPIView):
             TagOperations.delete_tag(null_tags)
 
         return Response(
-            serializer.data,
+            TagOperations.data_with_tags_name(serializer.data),
             status=status.HTTP_200_OK
         )
 
@@ -127,11 +128,11 @@ class PresentationView(RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         presentation_id = self.kwargs.get('presentation_id')
         presentation = get_object_or_404(Presentation, pk=presentation_id)
-        
+
         presentation_serializer = self.get_serializer(presentation)
         slide_queryset = presentation.presentation_slide.all()
         slide_serializer = SlideSerializer(slide_queryset, many=True)
-        
+
         data = presentation_serializer.data
         data['slides'] = slide_serializer.data
         return Response({"data" : data}, status=status.HTTP_200_OK)
