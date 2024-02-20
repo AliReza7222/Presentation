@@ -1,17 +1,18 @@
 from django.db.models import Sum
 from rest_framework import status
-from rest_framework.generics import (CreateAPIView, UpdateAPIView, GenericAPIView)
+from rest_framework.views import APIView
+from rest_framework.generics import (CreateAPIView, GenericAPIView)
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import *
 from .models import Profile, User
 from presentation.models import Presentation
 from slide.models import Slide
 from .models import Profile
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from .serializers import *
 
 
 class RegisterUserView(CreateAPIView):
@@ -80,7 +81,6 @@ class ChangePasswordView(GenericAPIView):
 
 
 class ResetPasswordView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = ResetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
@@ -92,20 +92,18 @@ class ResetPasswordView(GenericAPIView):
         return Response({"message" : "rest your password . (test)"}, status=status.HTTP_200_OK)
 
 
-class DashboardView(GenericAPIView):
+class DashboardView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        presentations = Presentation.objects.filter(user=request.user)
-        total_views_count = presentations.aggregate(total_views_count=Sum('cnt_view'))
-        presentations_count = presentations.count()
         slides_count = 0
+        presentations = Presentation.objects.filter(user=request.user)
+        total_views = presentations.aggregate(total_views=Sum('cnt_view'))
         for presentation in presentations:
-            slide_count = Slide.objects.filter(presentation_id= presentation).count()
-            slides_count += slide_count
+            slides_count += presentation.slide_set.count()
         data = {
-                "presentation_count" : presentations_count,
+                "presentation_count" : presentations.count(),
                 "slide_count" : slides_count,
-                "presentation_views" : total_views_count.get('total_views_count', 0),
+                "presentation_views" : total_views.get('total_views') or 0,
                 }
         return Response({"data" : data}, status=status.HTTP_200_OK)

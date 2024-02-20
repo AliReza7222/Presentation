@@ -33,7 +33,8 @@ class Presentation(BaseModel):
         db_table = 'Presentation'
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
-        self.background.storage.delete(str(self.background.name))
+        if self.background:
+            self.background.storage.delete(str(self.background.name))
         return super(Presentation, self).delete(*args, **kwargs)
 
     def __str__(self):
