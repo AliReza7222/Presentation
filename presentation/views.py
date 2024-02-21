@@ -129,6 +129,10 @@ class PresentationView(RetrieveAPIView):
     serializer_class = PresentationSerializer
     queryset = Presentation.objects.all()
 
+    def get_queryset(self):
+        queryset = Presentation.objects.filter(user=self.request.user)
+        return queryset
+
     def retrieve(self, request, *args, **kwargs):
         presentation = self.get_object()
         data = GetDataPresentation.data_presentation(presentation, self.get_serializer(presentation))
@@ -140,6 +144,10 @@ class PresentationBySlugView(RetrieveAPIView):
     serializer_class = PresentationSerializer
     queryset = Presentation.objects.all()
     lookup_field = 'slug'
+
+    def get_queryset(self):
+        queryset = Presentation.objects.filter(user=self.request.user)
+        return queryset
 
     def retrieve(self, request, *args, **kwargs):
         presentation = self.get_object()

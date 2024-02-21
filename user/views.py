@@ -100,7 +100,7 @@ class DashboardView(APIView):
         presentations = Presentation.objects.filter(user=request.user)
         total_views = presentations.aggregate(total_views=Sum('cnt_view'))
         for presentation in presentations:
-            slides_count += presentation.slide_set.count()
+            slides_count += presentation.presentation_slide.count()
         data = {
                 "presentation_count" : presentations.count(),
                 "slide_count" : slides_count,
