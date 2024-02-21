@@ -107,7 +107,6 @@ class ListPresentationView(ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         page_obj = Paginator(queryset, 5)
-        print(serializer.data, 'awkdoakwdkaowdk00000')
         response = {
             "pagination":{
                 "count": page_obj.count,
