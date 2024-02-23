@@ -47,4 +47,4 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 - This file was created to avoid repeating the code and it is used in `PresentationView` and `PresentationBySlugView` in the `presentation app` in `views.py` file.
 
 ## Diagram Sql Projects
-![diagram_sql](https://github.com/KarYar-ToTheSun/backend/blob/master/diagram_sql/diagram_models.png)
+![diagram_sql](https://github.com/KarYar-ToTheSun/backend/blob/update-readme/diagram_sql/diagram_models.png)
