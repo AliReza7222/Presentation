@@ -40,7 +40,7 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 ### create_code.py
 - This file was created to create a 258 character code to verify the user account and the `activision_code` field.
 ### data_digikala.py
-- This file was created to get data from the digital product link ('URL_DIGIKAL'), such as getting the information of the chapters and sections of a chapter and getting the sections of a chapter with the link that the user enters.
+- This file was created to get data from the digital product link `URL_DIGIKAL`, such as getting the information of the chapters and sections of a chapter and getting the sections of a chapter with the link that the user enters.
 ### tags.py
 - This file was created to handle issues related to the tag field in the presentation model, such as creating a tag and deleting and returning the names of the created tags, and the tags are deleted that are not related to the presentation .
 ### data_presentation.py
