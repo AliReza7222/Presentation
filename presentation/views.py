@@ -126,7 +126,6 @@ class ListPresentationView(ListAPIView):
 class PresentationView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PresentationSerializer
-    queryset = Presentation.objects.all()
 
     def get_queryset(self):
         queryset = Presentation.objects.filter(user=self.request.user)
@@ -141,7 +140,6 @@ class PresentationView(RetrieveAPIView):
 class PresentationBySlugView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PresentationSerializer
-    queryset = Presentation.objects.all()
     lookup_field = 'slug'
 
     def get_queryset(self):
