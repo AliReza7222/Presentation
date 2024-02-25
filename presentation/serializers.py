@@ -18,5 +18,6 @@ class PresentationSerializer(serializers.ModelSerializer):
     def validate(self, validated_data):
         user = self.context['request'].user
         validated_data['user'] = user
-        validated_data['slug'] = slugify(validated_data['title'])
+        if title := validated_data.get('title'):
+            validated_data['slug'] = slugify(title)
         return validated_data

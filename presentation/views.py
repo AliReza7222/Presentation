@@ -107,7 +107,7 @@ class ListPresentationView(ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         page_obj = Paginator(queryset, 9)
-        print(serializer.data, 'awkdoakwdkaowdk00000')
+
         response = {
             "pagination":{
                 "count": page_obj.count,
@@ -127,7 +127,6 @@ class ListPresentationView(ListAPIView):
 class PresentationView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PresentationSerializer
-    queryset = Presentation.objects.all()
 
     def get_queryset(self):
         queryset = Presentation.objects.filter(user=self.request.user)
@@ -142,7 +141,6 @@ class PresentationView(RetrieveAPIView):
 class PresentationBySlugView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PresentationSerializer
-    queryset = Presentation.objects.all()
     lookup_field = 'slug'
 
     def get_queryset(self):
