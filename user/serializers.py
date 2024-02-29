@@ -107,11 +107,12 @@ class LoginSerializer(serializers.Serializer):
         }
 
     def _serialize_profile(self, profile):
+        request = self.context['request']
         return {
             "id": str(profile.id),
             "first_name": profile.first_name,
             "last_name": profile.last_name,
-            "avatar": str(profile.avatar) or None,
+            "avatar": request.build_absolute_uri(profile.avatar.url) if profile.avatar else None,
             "bio": profile.bio
         }
 
