@@ -5,17 +5,15 @@ from rest_framework import status
 
 class DigiKalaData:
     API_URL_DIGIKALA = 'https://about.digikala.com/api/v1/dsb/report1401/chapters'
+    REPORTS_URL_DIGIKALA = 'https://about.digikala.com/reports/digikala1401'
 
     @staticmethod
-    def get_data(url: str, just_check=False) -> dict:
+    def get_data(url: str) -> dict:
         try:
             response = requests.get(url)
 
             # Raise an error when the status response is not 200
             response.raise_for_status()
-            # just for check url
-            if just_check:
-                return {"detail": response.reason, "status": status.HTTP_200_OK}
 
             return response.json()
 
@@ -61,9 +59,8 @@ class DigiKalaData:
         split_url = url.split('/')
 
         # check valid base url reports digikala
-        url_data = cls.get_data(url, just_check=True)
-        if url_data.get('status') != status.HTTP_200_OK:
-            return url_data
+        if not '/'.join(split_url[:-2]) == cls.REPORTS_URL_DIGIKALA:
+            return {'detail': 'NotFound', 'status': status.HTTP_404_NOT_FOUND}
 
         slug, html_id = split_url[-2], split_url[-1].lstrip('#')
         response = cls.get_sections(slug)
