@@ -25,12 +25,12 @@ class Presentation(BaseModel):
     cnt_view = models.PositiveIntegerField(default=0, editable=False)
     tags = models.ManyToManyField(Tag, blank=True)
 
+    class Meta:
+        db_table = 'Presentation'
+
     def increment_views_count(self):
         self.cnt_view += 1
         self.save()
-
-    class Meta:
-        db_table = 'Presentation'
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
         if self.background:
