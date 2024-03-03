@@ -29,6 +29,7 @@ class Presentation(BaseModel):
         db_table = 'Presentation'
 
     def increment_views_count(self):
+        """ The method of increasing the number of visits """
         self.cnt_view += 1
         self.save()
 
