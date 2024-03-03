@@ -4,6 +4,10 @@ from presentation.models import Tag
 
 
 class TagOperations:
+    """
+        This code performs tasks related to tags,
+        such as creating and deleting tags or returning tag information.
+    """
 
     @staticmethod
     def create_list_obj_tags(tag_names: list) -> list:

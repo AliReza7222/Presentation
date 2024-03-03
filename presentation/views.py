@@ -27,19 +27,16 @@ class CreatePresentationView(CreateAPIView):
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        # get data with list tag object
-        data, tags = TagOperations.get_tags(request.data.copy())
+        data, tags = TagOperations.get_tags(request.data.copy()) # get data without list tags and list get list tgas
         serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
-            transaction.set_rollback(True)
+            transaction.set_rollback(True) # roll back tags created from db when get a error
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         instance = serializer.save()
-        instance.tags.set(tags)
-        headers = self.get_success_headers(serializer.data)
+        instance.tags.set(tags) # set the list of tags sent by the user
         return Response(
             TagOperations.data_with_tags_name(serializer.data),
             status=status.HTTP_201_CREATED,
-            headers=headers
         )
 
 
@@ -51,21 +48,18 @@ class UpdatePresentationView(UpdateAPIView):
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-
-        # get data with list tag object
-        data, tags = TagOperations.get_tags(request.data.copy())
-
+        data, tags = TagOperations.get_tags(request.data.copy()) # get data without list tags and list get list tgas
         serializer = self.get_serializer(
             instance,
             data=data,
             partial=kwargs.get('partial', False)
         )
         if not serializer.is_valid():
-            transaction.set_rollback(True)
+            transaction.set_rollback(True) # roll back tags created from db when get a error
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
         self.perform_update(serializer)
-        instance.tags.set(tags)
+        instance.tags.set(tags) # set the list of tags sent by the user
 
         # delete tags ==> null presentation
         null_tags = list(

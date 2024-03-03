@@ -4,6 +4,10 @@ from string import ascii_letters, digits
 
 
 class CreateCode:
+    """
+        Creates a 258 character code for a activision_code
+        field to activate the user account.
+    """
     SPECIAL_LETTERS = '@%$#(){}!*&^~|<>'
 
     @classmethod

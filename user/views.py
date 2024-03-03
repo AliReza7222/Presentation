@@ -1,4 +1,5 @@
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, GenericAPIView)
@@ -57,13 +58,15 @@ class ActiveUserView(GenericAPIView):
         if not user.exists():
             return Response({'message': 'InValid activation_code'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = user.get()
-        user.is_active = True
-        user.save()
+        self.active_account(user= user.get())
         return Response(
             {'message': 'Your account has been successfully activated.'},
             status= status.HTTP_200_OK
         )
+
+    def active_account(self, user):
+        user.is_active = True
+        user.save()
 
 
 class ChangePasswordView(GenericAPIView):
@@ -96,14 +99,17 @@ class DashboardView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        slides_count = 0
         presentations = Presentation.objects.filter(user=request.user)
         total_views = presentations.aggregate(total_views=Sum('cnt_view'))
-        for presentation in presentations:
-            slides_count += presentation.presentation_slide.count()
         data = {
                 "presentation_count" : presentations.count(),
-                "slide_count" : slides_count,
+                "slide_count" : self.get_count_slides(presentations),
                 "presentation_views" : total_views.get('total_views') or 0,
                 }
         return Response({"data" : data}, status=status.HTTP_200_OK)
+
+    def get_count_slides(self, presentations):
+        slides_count = 0
+        for presentation in presentations:
+            slides_count += presentation.presentation_slide.count()
+        return slides_count
