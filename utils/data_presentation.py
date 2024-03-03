@@ -4,6 +4,10 @@ from .tags import TagOperations
 
 
 class GetDataPresentation:
+    """
+        This code is implemented in order to avoid repeating the logic in
+        two places and to follow the principle of DRY.
+    """
 
     @classmethod
     def data_presentation(cls, presentation_obj: Presentation,

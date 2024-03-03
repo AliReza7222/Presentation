@@ -4,6 +4,8 @@ from rest_framework import status
 
 
 class DigiKalaData:
+    """ A code to communicate with DigiKala's links and get the desired information """
+
     API_URL_DIGIKALA = 'https://about.digikala.com/api/v1/dsb/report1401/chapters'
 
     @staticmethod
